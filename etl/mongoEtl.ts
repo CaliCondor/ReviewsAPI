@@ -70,37 +70,42 @@ const Product = mongoose.model<IProduct>('Product', productSchema);
 console.log('reading CSV...');
 const parser = parse();
 
-// generate basic products table
-let index = 0;
-let per = 0;
-const ids: { [key: string]: any } = {};
-fs.createReadStream('./reviews.csv', {encoding: 'utf8'})
-  .pipe(parser)
-  .on('data', (row: any) => {
-    index++;
-    if (Math.floor((index / 5774952) * 100) > per) {
-      per = Math.floor((index / 5774952) * 100);
-      // percent way through .csv
-      console.log(per + '%');
-    }
-
-    if (!Number.isNaN(row[1])) {
-      ids[row[1]] = 1;
-    }
-  })
-  .on('end', () => {
-    console.log('creating arr...');
-    // insert ids into an array of objects matching the schema
-    const arr: Array<IProduct> = [];
-    Object.keys(ids).forEach((id) => {
-      if (!Number.isNaN(parseInt(id))) {
-        arr.push({
-          product_id: parseInt(id),
-        });
+// generate basic products table, don't need to run every time
+const generateProducts = async () => {
+  await Product.collection.drop();
+  let index = 0;
+  let per = 0;
+  const ids: { [key: string]: any } = {};
+  fs.createReadStream('./reviews.csv', {encoding: 'utf8'})
+    .pipe(parser)
+    .on('data', (row: any) => {
+      index++;
+      if (Math.floor((index / 5774952) * 100) > per) {
+        per = Math.floor((index / 5774952) * 100);
+        // percent way through .csv
+        console.log(per + '%');
       }
+
+      if (!Number.isNaN(row[1])) {
+        ids[row[1]] = 1;
+      }
+    })
+    .on('end', async () => {
+      console.log('creating arr...');
+      // insert ids into an array of objects matching the schema
+      const arr: Array<IProduct> = [];
+      Object.keys(ids).forEach((id) => {
+        if (!Number.isNaN(parseInt(id))) {
+          arr.push({
+            product_id: parseInt(id),
+          });
+        }
+      });
+      console.log('inserting...');
+      // insert all product ids into db
+      await Product.insertMany(arr);
+      console.log('finished inserting!');
     });
-    console.log('inserting...');
-    // insert all product ids into db
-    Product.insertMany(arr);
-    console.log('finished inserting!');
-  });
+}
+
+// generateProducts();

@@ -48,36 +48,41 @@ const productSchema = new mongoose_1.default.Schema({
 const Product = mongoose_1.default.model('Product', productSchema);
 console.log('reading CSV...');
 const parser = (0, csv_parse_1.parse)();
-// generate basic products table
-let index = 0;
-let per = 0;
-const ids = {};
-fs.createReadStream('./reviews.csv', { encoding: 'utf8' })
-    .pipe(parser)
-    .on('data', (row) => {
-    index++;
-    if (Math.floor((index / 5774952) * 100) > per) {
-        per = Math.floor((index / 5774952) * 100);
-        // percent way through .csv
-        console.log(per + '%');
-    }
-    if (!Number.isNaN(row[1])) {
-        ids[row[1]] = 1;
-    }
-})
-    .on('end', () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('creating arr...');
-    // insert ids into an array of objects matching the schema
-    const arr = [];
-    Object.keys(ids).forEach((id) => __awaiter(void 0, void 0, void 0, function* () {
-        if (!Number.isNaN(parseInt(id))) {
-            arr.push({
-                product_id: parseInt(id),
-            });
+// generate basic products table, don't need to run every time
+const generateProducts = () => __awaiter(void 0, void 0, void 0, function* () {
+    yield Product.collection.drop();
+    let index = 0;
+    let per = 0;
+    const ids = {};
+    fs.createReadStream('./reviews.csv', { encoding: 'utf8' })
+        .pipe(parser)
+        .on('data', (row) => {
+        index++;
+        if (Math.floor((index / 5774952) * 100) > per) {
+            per = Math.floor((index / 5774952) * 100);
+            // percent way through .csv
+            console.log(per + '%');
         }
+        if (!Number.isNaN(row[1])) {
+            ids[row[1]] = 1;
+        }
+    })
+        .on('end', () => __awaiter(void 0, void 0, void 0, function* () {
+        console.log('creating arr...');
+        // insert ids into an array of objects matching the schema
+        const arr = [];
+        Object.keys(ids).forEach((id) => {
+            if (!Number.isNaN(parseInt(id))) {
+                arr.push({
+                    product_id: parseInt(id),
+                });
+            }
+        });
+        console.log('inserting...');
+        // insert all product ids into db
+        yield Product.insertMany(arr);
+        console.log('finished inserting!');
+        return;
     }));
-    console.log('inserting...');
-    // insert all product ids into db
-    Product.insertMany(arr);
-    console.log('finished inserting!');
-}));
+});
+generateProducts();
