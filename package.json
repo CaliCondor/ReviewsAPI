@@ -1,0 +1,26 @@
+{
+  "name": "reviewsapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CaliCondor/ReviewsAPI.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CaliCondor/ReviewsAPI/issues"
+  },
+  "homepage": "https://github.com/CaliCondor/ReviewsAPI#readme",
+  "devDependencies": {
+    "csv-parse": "^5.3.3",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "mongoose": "^6.8.1"
+  }
+}
