@@ -78,7 +78,7 @@ const generateProducts = async () => {
   let per = 0;
   const ids: any = {};
   const parser = parse();
-  fs.createReadStream('./reviews.csv', {encoding: 'utf8'})
+  fs.createReadStream('./dist/reviews.csv', {encoding: 'utf8'})
     .pipe(parser)
     .on('data', (row: any) => {
       index++;
@@ -105,7 +105,7 @@ const insertReviews = (obj: any) => {
   const parser = parse();
   let index = 0;
   let per = 0;
-  fs.createReadStream('./reviews.csv', {encoding: 'utf8'})
+  fs.createReadStream('./dist/reviews.csv', {encoding: 'utf8'})
     .pipe(parser)
     .on('data', (row: string[]) => {
       index++;
