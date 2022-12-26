@@ -149,7 +149,46 @@ const readCharacteristics = () => {
         delete obj[key];
       }
       console.log('finished inserting characteristics!');
+      characteristicReviews();
     });
 };
 
-readCharacteristics();
+const characteristicReviews = () => {
+  console.log('generating characteristic reviews...');
+  const obj: Record<string, number[]> = {};
+  fs.createReadStream('./build/etl/characteristic_reviews.csv', {encoding: 'utf8'})
+    .pipe(parse())
+    .on('data', (row: string[]) => {
+      if (!Number.isNaN(parseInt(row[0]))) {
+        if (obj[row[1]] === undefined) obj[row[1]] = [];
+        obj[row[1]].push(parseInt(row[3]));
+      }
+    })
+    .on('end', async () => {
+      console.log('inserting characteristic reviews...');
+      const len = Object.keys(obj).length;
+      let index = 0;
+      let per = 0;
+
+      for (const key in obj) {
+        index++;
+        if (Math.floor((index / len) * 100) > per) {
+          per = Math.floor((index / len) * 100);
+          console.log(per + '%');
+          console.log('memory usage: ', Math.round((process.memoryUsage().rss) / 1024 / 1024), 'MB');
+        }
+
+        await Product.findOneAndUpdate(
+          { 'characteristics.characteristic_id': parseInt(key) },
+          { '$set': {
+            'characteristics.$.values': obj[key],
+          }}
+        );
+        delete obj[key];
+      }
+
+      console.log('finished inserting characteristic reviews!!!!')
+    });
+};
+
+characteristicReviews();

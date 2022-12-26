@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+mongoose.set('strictQuery', false);
 mongoose.connect('mongodb://localhost:27017/reviews');
 
 /* INTERFACES FOR SCHEMAS */
@@ -67,5 +68,4 @@ const productSchema = new mongoose.Schema<IProduct>({
 });
 
 const Product = mongoose.model<IProduct>('Product', productSchema);
-
 export default Product;
