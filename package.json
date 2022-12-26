@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "etl": "node --max-old-space-size=6000 dist/mongoEtl.js",
+    "etl": "node --max-old-space-size=6000 build/etl/mongoEtl.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,7 +18,10 @@
   },
   "homepage": "https://github.com/CaliCondor/ReviewsAPI#readme",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.47.1",
+    "@typescript-eslint/parser": "^5.47.1",
     "csv-parse": "^5.3.3",
+    "eslint": "^8.30.0",
     "typescript": "^4.9.4"
   },
   "dependencies": {
