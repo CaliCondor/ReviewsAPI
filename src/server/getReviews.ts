@@ -19,7 +19,7 @@ const getReviews = async (req: Request, res: Response) => {
     // const { sort } = req.query;
 
     // get all the reviews, then filter the reviews by the page and count
-    const query = await Product.findOne({ product_id: product_id }, 'reviews');
+    const query = await Product.findOne({ product_id: product_id }).select('reviews').lean();
     const reviews = query?.reviews.slice((page - 1) * count, page * count);
 
     res.send({

@@ -3,10 +3,12 @@ config:
   phases:
     - duration: 5
       arrivalRate: 1
-      rampTo: 1000
+      rampTo: 500
+    - duration: 5
+      arrivalRate: 500
 scenarios:
   - flow:
       - get:
-          url: "/reviews"
+          url: "/reviews/meta"
           qs:
-           product_id: 232962
+           product_id: 958320
