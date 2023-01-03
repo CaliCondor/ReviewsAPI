@@ -197,7 +197,7 @@ const characteristicReviews = () => {
         delete obj[key];
       }
 
-      console.log('finished inserting characteristic reviews!!!!')
+      console.log('finished inserting characteristic reviews!!!!');
     });
 };
 

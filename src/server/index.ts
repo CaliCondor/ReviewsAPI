@@ -17,9 +17,8 @@ app.post('/reviews', postReviews);
     minPoolSize: 100,
     maxPoolSize: 500,
   }
-  mongoose.connect('mongodb://localhost:27017/reviews', options);
+  await mongoose.connect('mongodb://localhost:27017/reviews', options);
   app.listen(port, () => {
     console.log(`App listening on port ${port}`);
   });
 })();
-

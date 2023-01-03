@@ -8,13 +8,45 @@ const postReviews = async (req: Request, res: Response) => {
     return;
   }
 
+  const rating = parseInt(req.query.rating as string);
+  const recommended = req.query.recommended === 'true';
+  const photos = (req.query.photos as string[]).map((photo: string, i: number) => {
+    return {
+      id: i,
+      url: photo,
+    }
+  });
+
   try {
     const reviewCount = await ReviewCount.findOne({});
+    if (!reviewCount) throw new Error;
 
-    if (reviewCount) {
-      reviewCount.count = reviewCount.count + 1;
-      reviewCount.save();
+    const product = await Product.findOne({product_id: req.query.product_id});
+    if (!product) {
+      res.status(422);
+      res.send('Error: malformed request');
+      return;
     }
+
+    product.reviews.push({
+      review_id: reviewCount.count + 1,
+      rating: rating,
+      summary: req.query.summary as string,
+      recommended: recommended,
+      body: req.query.body as string,
+      name: req.query.name as string,
+      photos: photos,
+      response: '',
+      date: '' + new Date(),
+      helpfulness: 0,
+      reported: false
+    });
+    await product.save();
+    reviewCount.count = reviewCount.count + 1;
+    await reviewCount.save();
+
+    res.status(202);
+    res.send();
   } catch {
     res.status(500);
     res.send('Internal server error');
