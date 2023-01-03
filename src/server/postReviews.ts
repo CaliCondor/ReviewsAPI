@@ -1,30 +1,32 @@
-import { Request, Response } from 'express';
-import Product, { ReviewCount } from '../db/productReviews';
+import { Request, Response } from "express";
+import Product, { ReviewCount } from "../db/productReviews";
 
 const postReviews = async (req: Request, res: Response) => {
   if (!verifyReq(req)) {
     res.status(422);
-    res.send('Error: malformed request');
+    res.send("Error: malformed request");
     return;
   }
 
   const rating = parseInt(req.query.rating as string);
-  const recommended = req.query.recommended === 'true';
-  const photos = (req.query.photos as string[]).map((photo: string, i: number) => {
-    return {
-      id: i,
-      url: photo,
+  const recommended = req.query.recommended === "true";
+  const photos = (req.query.photos as string[]).map(
+    (photo: string, i: number) => {
+      return {
+        id: i,
+        url: photo,
+      };
     }
-  });
+  );
 
   try {
     const reviewCount = await ReviewCount.findOne({});
-    if (!reviewCount) throw new Error;
+    if (!reviewCount) throw new Error();
 
-    const product = await Product.findOne({product_id: req.query.product_id});
+    const product = await Product.findOne({ product_id: req.query.product_id });
     if (!product) {
       res.status(422);
-      res.send('Error: malformed request');
+      res.send("Error: malformed request");
       return;
     }
 
@@ -36,10 +38,10 @@ const postReviews = async (req: Request, res: Response) => {
       body: req.query.body as string,
       name: req.query.name as string,
       photos: photos,
-      response: '',
-      date: '' + new Date(),
+      response: "",
+      date: "" + new Date(),
       helpfulness: 0,
-      reported: false
+      reported: false,
     });
     await product.save();
     reviewCount.count = reviewCount.count + 1;
@@ -49,16 +51,25 @@ const postReviews = async (req: Request, res: Response) => {
     res.send();
   } catch {
     res.status(500);
-    res.send('Internal server error');
+    res.send("Internal server error");
   }
 };
 
-const verifyReq = (req: Request): boolean => {
+const verifyReq = ({ query }: Request): boolean => {
   // TODO: verify request
-  if (!req.query.product_id) {
+  if (
+    !query.product_id ||
+    !query.rating ||
+    !query.summary ||
+    !query.body ||
+    !query.recommended ||
+    !query.name ||
+    !query.email ||
+    !query.photos
+  ) {
     return false;
   }
   return true;
-}
+};
 
 export default postReviews;
