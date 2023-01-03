@@ -16,11 +16,17 @@ app.put("/reviews/:review_id/report", putReport);
 (async () => {
   const options = {
     useUnifiedTopology: true,
-    minPoolSize: 100,
-    maxPoolSize: 500,
+    useNewUrlParser: true,
+    minPoolSize: 1000,
+    maxPoolSize: 5000,
   };
-  await mongoose.connect("mongodb://localhost:27017/reviews", options);
+  await mongoose.connect(
+    "mongodb://localhost:27017/reviews?directConnection=true",
+    options
+  );
   app.listen(port, () => {
     console.log(`App listening on port ${port}`);
   });
 })();
+
+module.exports = app;

@@ -1,14 +1,12 @@
 config:
   target: "http://localhost:3000"
   phases:
-    - duration: 5
+    - duration: 10
       arrivalRate: 1
-      rampTo: 500
-    - duration: 5
-      arrivalRate: 500
+      rampTo: 1000
 scenarios:
   - flow:
       - get:
           url: "/reviews/meta"
           qs:
-           product_id: 958320
+            product_id: 958320
