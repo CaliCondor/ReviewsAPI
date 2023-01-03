@@ -1,46 +1,53 @@
-import mongoose from 'mongoose';
-mongoose.set('strictQuery', false);
-mongoose.connect('mongodb://localhost:27017/reviews');
+import mongoose from "mongoose";
+mongoose.set("strictQuery", false);
 
 /* INTERFACES FOR SCHEMAS */
 
 export interface IPhoto {
-  id: number,
-  url: string,
+  id: number;
+  url: string;
 }
 
 interface IReview {
-  review_id: number,
-  rating: number,
-  summary: string,
-  recommended: boolean,
-  response: string,
-  body: string,
-  date: string,
-  name: string,
-  helpfulness: number,
-  reported: boolean,
-  photos?: Array<IPhoto>,
+  review_id: number;
+  rating: number;
+  summary: string;
+  recommended: boolean;
+  response: string;
+  body: string;
+  date: string;
+  name: string;
+  helpfulness: number;
+  reported: boolean;
+  photos?: Array<IPhoto>;
 }
 
 export interface ICharacteristic {
-  characteristic_id: number,
-  name: string,
-  values: number[],
+  characteristic_id: number;
+  name: string;
+  values: number[];
 }
 
 export interface IProduct {
-  product_id: number,
-  reviews: IReview[],
-  characteristics: ICharacteristic[],
+  product_id: number;
+  reviews: IReview[];
+  characteristics: ICharacteristic[];
 }
 
+interface IReviewCount {
+  count: number;
+}
 
 /* SCHEMA DEFINITIONS */
 
+// schema to count the number of reviews
+const reviewCountSchema = new mongoose.Schema<IReviewCount>({
+  count: { type: Number, unique: true },
+});
+
 // review documents store individual reviews
 const reviewSchema = new mongoose.Schema<IReview>({
-  review_id: {type: Number, index: { unique: true }},
+  review_id: { type: Number, index: { unique: true } },
   rating: Number,
   summary: String,
   recommended: Boolean,
@@ -62,10 +69,16 @@ const characteristicSchema = new mongoose.Schema<ICharacteristic>({
 
 // product documents store the product id, as well as all the review sub documents
 const productSchema = new mongoose.Schema<IProduct>({
-  product_id: {type: Number, index: { unique: true }},
+  product_id: { type: Number, index: { unique: true } },
   reviews: [reviewSchema],
   characteristics: [characteristicSchema],
 });
 
-const Product = mongoose.model<IProduct>('Product', productSchema);
+const Product = mongoose.model<IProduct>("Product", productSchema);
 export default Product;
+
+const ReviewCount = mongoose.model<IReviewCount>(
+  "ReviewCount",
+  reviewCountSchema
+);
+export { ReviewCount };
