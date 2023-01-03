@@ -34,8 +34,17 @@ export interface IProduct {
   characteristics: ICharacteristic[],
 }
 
+interface IReviewCount {
+  count: number,
+}
+
 
 /* SCHEMA DEFINITIONS */
+
+// schema to count the number of reviews
+const reviewCountSchema = new mongoose.Schema<IReviewCount>({
+  count: {type: Number, unique: true}
+});
 
 // review documents store individual reviews
 const reviewSchema = new mongoose.Schema<IReview>({
@@ -68,3 +77,6 @@ const productSchema = new mongoose.Schema<IProduct>({
 
 const Product = mongoose.model<IProduct>('Product', productSchema);
 export default Product;
+
+const ReviewCount = mongoose.model<IReviewCount>('ReviewCount', reviewCountSchema);
+export { ReviewCount };

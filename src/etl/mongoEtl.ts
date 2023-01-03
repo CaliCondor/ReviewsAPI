@@ -1,7 +1,15 @@
 import * as fs from 'fs';
 import process from 'process';
 import { parse } from 'csv-parse';
-import Product, { IProduct, IPhoto, ICharacteristic } from '../db/productReviews';
+import mongoose from 'mongoose';
+import Product, { IProduct, IPhoto, ICharacteristic, ReviewCount } from '../db/productReviews';
+
+const options = {
+  useUnifiedTopology: true,
+  minPoolSize: 100,
+  maxPoolSize: 500,
+}
+mongoose.connect('mongodb://localhost:27017/reviews', options);
 
 // generate basic products table, don't need to run every time
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -52,11 +60,13 @@ const insertReviews = (obj: Record<string, IProduct>) => {
       }
     })
     .on('end', async () => {
-      // const arr: IProduct[] = [];
       console.log('inserting reviews...')
       let index = 0;
       let per = 0;
       const len = Object.keys(obj).length;
+      await ReviewCount.create({
+        count: len
+      });
       for (const key in obj) {
         // tracking
         index++;
@@ -191,4 +201,4 @@ const characteristicReviews = () => {
     });
 };
 
-characteristicReviews();
+generateProducts();

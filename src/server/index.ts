@@ -1,14 +1,15 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import getReviews from './getReviews';
 import getMeta from './getMeta';
-import mongoose from 'mongoose';
+import postReviews from './postReviews';
 
 const app = express();
 const port = 3000;
 
 app.get('/reviews', getReviews);
-
 app.get('/reviews/meta', getMeta);
+app.post('/reviews', postReviews);
 
 (async () => {
   const options = {
