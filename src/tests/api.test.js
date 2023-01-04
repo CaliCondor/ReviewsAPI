@@ -53,3 +53,14 @@ describe('POST review', () => {
     expect(data).toEqual('Error: malformed request');
   });
 });
+
+describe('PUT report', () => {
+  it('reports a review', async () => {
+    const { status } = await axios({
+      method: 'PUT',
+      url: 'http://localhost:3000/reviews/1/report'
+    });
+
+    expect(status).toEqual(204);
+  });
+});
