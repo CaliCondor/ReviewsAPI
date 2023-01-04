@@ -7,7 +7,7 @@ describe('GET reviews', () => {
     expect(status).toEqual(200);
     expect(data).toBeDefined();
     expect(data.results).toBeDefined();
-    expect(data.results.length).toEqual(3);
+    expect(data.results.length).toEqual(5);
     expect(data.page).toEqual(1);
   });
 
@@ -33,5 +33,23 @@ describe('GET meta', () => {
     expect(data.recommended).toBeDefined();
     expect(data.characteristics).toBeDefined();
     expect(data.product_id).toEqual('1');
+  });
+});
+
+describe('POST review', () => {
+  it('posts a basic review', async () => {
+    const { status } = await axios.post('http://localhost:3000/reviews?product_id=5&rating=5&summary=Hi&body=Hi my name is Gerritt&recommended=true&name=me&email=me@gmail.com&photos[]=test.com');
+    expect(status).toEqual(202);
+  });
+
+  it('rejects bad requests', async () => {
+    const { status, data } = await axios({
+      method: 'POST',
+      url: 'http://localhost:3000/reviews?product_id=5&rating=5&summary=Hi',
+      validateStatus: () => true,
+    });
+
+    expect(status).toEqual(422);
+    expect(data).toEqual('Error: malformed request');
   });
 });
