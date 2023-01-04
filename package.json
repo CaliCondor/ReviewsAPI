@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "etl": "node --max-old-space-size=6000 build/etl/mongoEtl.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "prestart": "tsc",
     "start": "node build/server/index.js"
   },
