@@ -7,7 +7,7 @@
     "etl": "node --max-old-space-size=6000 build/etl/mongoEtl.js",
     "test": "jest",
     "prestart": "tsc",
-    "start": "node build/server/index.js"
+    "start": "pm2 build/server/index.js -i 0"
   },
   "repository": {
     "type": "git",
@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "express": "^4.18.2",
-    "mongoose": "^6.8.1"
+    "mongoose": "^6.8.1",
+    "pm2": "^5.2.2"
   }
 }

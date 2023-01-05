@@ -4,6 +4,8 @@ config:
     - duration: 10
       arrivalRate: 1
       rampTo: 1000
+    - duration: 30
+      arrivalRate: 1000
 scenarios:
   - flow:
       - get:
