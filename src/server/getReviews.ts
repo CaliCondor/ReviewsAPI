@@ -1,12 +1,12 @@
-import { Request, Response } from 'express';
-import Product from '../db/productReviews';
+import { Request, Response } from "express";
+import Product from "../db/productReviews";
 
 // request handler for /reviews GET endpoint
 const getReviews = async (req: Request, res: Response) => {
   // check to ensure request has a product id
   if (!req.query.product_id) {
     res.status(422);
-    res.send('Error: invalid product_id provided');
+    res.send("Error: invalid product_id provided");
     return;
   }
 
@@ -19,20 +19,21 @@ const getReviews = async (req: Request, res: Response) => {
     // const { sort } = req.query;
 
     // get all the reviews, then filter the reviews by the page and count
-    const query = await Product.findOne({ product_id: product_id }).select('reviews').lean();
+    const query = await Product.findOne({ product_id: product_id })
+      .select("reviews")
+      .lean();
     const reviews = query?.reviews.slice((page - 1) * count, page * count);
 
     res.send({
-      product: '' + product_id,
+      product: "" + product_id,
       page,
       count,
-      results: reviews
+      results: reviews,
     });
   } catch {
     res.status(500);
-    res.send('Internal server error');
+    res.send("Internal server error");
   }
-
 };
 
 export default getReviews;

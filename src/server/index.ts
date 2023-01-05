@@ -17,7 +17,7 @@ app.put("/reviews/:review_id/report", putReport);
   const options = {
     useUnifiedTopology: true,
     useNewUrlParser: true,
-    minPoolSize: 1000,
+    minPoolSize: 100,
     maxPoolSize: 5000,
   };
   await mongoose.connect(
